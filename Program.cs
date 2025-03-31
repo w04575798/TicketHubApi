@@ -1,3 +1,6 @@
+using TicketHubApi.Services;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +8,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add AzureQueueService to the DI container
+// Inject IConfiguration so AzureQueueService can access appsettings.json
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<AzureQueueService>();
 
 var app = builder.Build();
@@ -18,3 +22,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();

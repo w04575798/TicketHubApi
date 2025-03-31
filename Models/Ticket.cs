@@ -4,6 +4,7 @@ namespace TicketHubApi.Models
 {
     public class Ticket
     {
+
         public int ConcertId { get; set; }
 
         [Required, EmailAddress]

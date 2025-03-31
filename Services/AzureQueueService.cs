@@ -6,6 +6,7 @@ namespace TicketHubApi.Services
 {
     public class AzureQueueService
     {
+
         private readonly QueueClient _queueClient;
 
         public AzureQueueService(IConfiguration configuration)

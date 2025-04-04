@@ -9,7 +9,7 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,22 +33,8 @@ jobs:
     - name: Publish
       run: dotnet publish --configuration Release --output ./publish
 
-    - name: Upload published output
-      uses: actions/upload-artifact@v3
-      with:
-        name: publish
-        path: ./publish
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - name: Download published output
-      uses: actions/download-artifact@v3
-      with:
-        name: publish
-        path: ./publish
+    - name: Show contents of publish folder
+      run: ls -la ./publish
 
     - name: Deploy to Azure Web App
       uses: Azure/webapps-deploy@v2

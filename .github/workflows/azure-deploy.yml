@@ -31,6 +31,12 @@ jobs:
     - name: Run tests
       run: dotnet test --configuration Release
 
+    - name: Check current directory
+      run: pwd  # Check where we are in the file system
+
+    - name: List files before publishing
+      run: ls -R  # List files before running publish
+
     - name: Publish
       run: dotnet publish --configuration Release --output ./publish
 
@@ -42,7 +48,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Debugging step to list files in the publish directory
     - name: List files in publish directory
       run: ls -R ./publish
 
@@ -51,4 +56,4 @@ jobs:
       with:
         app-name: nscc-0475798-tickets-api
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: './publish'  
+        package: './publish'

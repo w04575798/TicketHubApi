@@ -39,13 +39,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Login to Azure
+    # Login to Azure using service principal
     - name: Login to Azure
       uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
 
     - name: Azure Web App Deploy
       uses: Azure/webapps-deploy@v2

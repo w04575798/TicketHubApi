@@ -1,6 +1,6 @@
 name: Build and Deploy ASP.NET Core Web API to Azure
 
-# Trigger the workflow on push to the main branch
+# Trigger the workflow on push to the master branch
 on:
   push:
     branches:
@@ -17,7 +17,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
       with:
-          dotnet-version: '8.0.x' 
+        dotnet-version: '8.0.x'
 
     - name: Restore dependencies
       run: dotnet restore
@@ -33,11 +33,19 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build  
+    needs: build
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    # Login to Azure
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
     - name: Azure Web App Deploy
       uses: Azure/webapps-deploy@v2

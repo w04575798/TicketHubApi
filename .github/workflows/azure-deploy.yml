@@ -47,4 +47,4 @@ jobs:
       with:
         app-name: nscc-0475798-tickets-api
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: './publish'
+        package: './publish'  

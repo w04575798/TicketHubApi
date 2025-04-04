@@ -42,6 +42,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Debugging step to list files in the publish directory
+    - name: List files in publish directory
+      run: ls -R ./publish
+
     - name: Deploy to Azure Web App
       uses: Azure/webapps-deploy@v2
       with:

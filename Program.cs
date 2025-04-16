@@ -1,4 +1,3 @@
-// Ensure all using statements are at the top
 using TicketHubApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +15,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<AzureQueueService>();
 
+// Add CORS policy to allow your Azure app's URL
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAzureApp", builder =>
+    {
+        builder.WithOrigins("https://lemon-plant-09d34e60f.6.azurestaticapps.net/")  // Replace with the actual Azure app URL
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Enable Swagger UI in both development and production environments
@@ -25,7 +35,9 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-// Middleware setup
+// Use CORS policy here
+app.UseCors("AllowAzureApp");
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 

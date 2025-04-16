@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAzureApp", builder =>
     {
-        builder.WithOrigins("https://lemon-plant-09d34e60f.6.azurestaticapps.net/")  // Replace with the actual Azure app URL
+        builder.WithOrigins("https://lemon-plant-09d34e60f.6.azurestaticapps.net")  // Replace with the actual Azure app URL
                .AllowAnyMethod()
                .AllowAnyHeader();
     });

@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register services for dependency injection
+// Register services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -15,34 +17,45 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<AzureQueueService>();
 
-// Add CORS policy to allow your Azure app's URL
+// CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAzureApp", builder =>
+    options.AddPolicy("AllowAzureApp", policy =>
     {
-        builder.WithOrigins("https://lemon-plant-09d34e60f.6.azurestaticapps.net")  // Replace with the actual Azure app URL
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        policy.WithOrigins("https://lemon-plant-09d34e60f.6.azurestaticapps.net")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
 var app = builder.Build();
 
-// Enable Swagger UI in both development and production environments
+// Global error handler
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+        logger.LogError(exceptionHandlerPathFeature?.Error, "Unhandled exception occurred");
+
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsync("An unexpected error occurred.");
+    });
+});
+
+// Swagger setup
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Use CORS policy here
-app.UseCors("AllowAzureApp");
-
+// Middleware pipeline
 app.UseHttpsRedirection();
+app.UseCors("AllowAzureApp");
 app.UseAuthorization();
 
-// Map controller routes
 app.MapControllers();
-
-// Run the application
 app.Run();

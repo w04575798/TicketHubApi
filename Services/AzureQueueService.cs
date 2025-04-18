@@ -19,7 +19,8 @@ namespace TicketHubApi.Services
         public async Task SendMessageAsync(Ticket ticket)
         {
             string message = JsonSerializer.Serialize(ticket);
-            await _queueClient.SendMessageAsync(message);
+            string base64Message = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
+            await _queueClient.SendMessageAsync(base64Message);
         }
     }
 }

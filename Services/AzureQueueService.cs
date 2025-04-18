@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Queues;
+using System.Text;
 using System.Text.Json;
 using TicketHubApi.Models;
 
@@ -6,7 +7,6 @@ namespace TicketHubApi.Services
 {
     public class AzureQueueService
     {
-
         private readonly QueueClient _queueClient;
 
         public AzureQueueService(IConfiguration configuration)
@@ -18,8 +18,8 @@ namespace TicketHubApi.Services
 
         public async Task SendMessageAsync(Ticket ticket)
         {
-            string message = JsonSerializer.Serialize(ticket);
-            string base64Message = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
+            string json = JsonSerializer.Serialize(ticket);
+            string base64Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
             await _queueClient.SendMessageAsync(base64Message);
         }
     }
